@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Certificate — AI4Life Learning</title>
+  <meta name="description" content="Verify your AI4Life Learning certificate instantly using your unique certificate ID." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <img src="images/logo.png" alt="AI4Life Learning" onerror="this.parentElement.innerHTML='<span class=\'nav-logo-placeholder\'><span style=\'color:var(--teal);font-size:1.4rem;\'>✦</span> AI4Life Learning</span>'" />
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#courses">Courses</a></li>
+          <li><a href="index.html#how-it-works">How It Works</a></li>
+          <li><a href="verify.html" class="active">Verify Certificate</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="https://wa.me/yournumber?text=Hello,%20I'd%20like%20to%20enroll%20in%20the%20AI%20for%20Life%20course." target="_blank" class="btn btn-whatsapp btn-sm">
+            <i class="fab fa-whatsapp"></i> Enroll via WhatsApp
+          </a>
+        </div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#courses">Courses</a>
+    <a href="index.html#how-it-works">How It Works</a>
+    <a href="verify.html">Verify Certificate</a>
+    <a href="index.html#contact">Contact</a>
+    <a href="https://wa.me/yournumber?text=Hello,%20I'd%20like%20to%20enroll%20in%20the%20AI%20for%20Life%20course." target="_blank" class="btn btn-whatsapp">
+      <i class="fab fa-whatsapp"></i> Enroll via WhatsApp
+    </a>
+  </div>
+
+  <!-- HERO -->
+  <div class="verify-hero">
+    <div class="container">
+      <span class="section-label" style="color:rgba(255,255,255,0.6);border-color:rgba(255,255,255,0.15);">
+        <i class="fas fa-shield-halved"></i> Certificate Verification
+      </span>
+      <h1 style="margin-top:10px;">Verify Your Certificate</h1>
+      <p>Enter your unique certificate ID below to instantly verify the authenticity of your AI4Life Learning certificate.</p>
+    </div>
+  </div>
+
+  <!-- VERIFY SECTION -->
+  <section class="verify-section">
+    <div class="container">
+      <div class="verify-box">
+        <h3><i class="fas fa-search" style="color:var(--teal);margin-right:8px;"></i>Certificate Lookup</h3>
+        <p>Enter the Certificate ID exactly as it appears on your certificate (e.g. AL-2024-001)</p>
+
+        <div id="alertBox"></div>
+
+        <div class="search-group">
+          <input
+            type="text"
+            id="certIdInput"
+            placeholder="e.g. AL-2024-001"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="btn btn-primary" onclick="verifyCertificate()">
+            <i class="fas fa-search"></i> Verify
+          </button>
+        </div>
+        <p class="text-muted" style="font-size:0.82rem;margin-top:10px;">
+          <i class="fas fa-info-circle"></i> Certificate IDs are case-insensitive and can be found on your certificate email.
+        </p>
+
+        <!-- Result Area -->
+        <div class="cert-result" id="certResult"></div>
+      </div>
+
+      <!-- Info Cards -->
+      <div class="grid-3" style="margin-top:48px;max-width:860px;margin-left:auto;margin-right:auto;">
+        <div class="card" style="text-align:center;padding:28px 20px;">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(31,167,138,0.10);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 14px;">
+            <i class="fas fa-lock"></i>
+          </div>
+          <h4 style="margin-bottom:8px;">Tamper-proof</h4>
+          <p style="font-size:0.85rem;color:var(--text-muted);">Each certificate has a unique ID that cannot be duplicated or forged.</p>
+        </div>
+        <div class="card" style="text-align:center;padding:28px 20px;">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(200,156,77,0.10);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 14px;">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h4 style="margin-bottom:8px;">Instant Verification</h4>
+          <p style="font-size:0.85rem;color:var(--text-muted);">Verify any certificate in seconds — no sign-up needed.</p>
+        </div>
+        <div class="card" style="text-align:center;padding:28px 20px;">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(30,42,58,0.08);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin:0 auto 14px;">
+            <i class="fas fa-share-nodes"></i>
+          </div>
+          <h4 style="margin-bottom:8px;">Share Anywhere</h4>
+          <p style="font-size:0.85rem;color:var(--text-muted);">Share your verified certificate on LinkedIn and with employers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="images/logo.png" alt="AI4Life Learning" onerror="this.outerHTML='<div class=\'footer-brand-placeholder\'>✦ AI4Life Learning</div>'" />
+          <p>Empowering non-tech professionals and students to use AI tools in real life — simply and practically.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#about">About</a></li>
+            <li><a href="index.html#courses">Courses</a></li>
+            <li><a href="index.html#how-it-works">How It Works</a></li>
+            <li><a href="verify.html">Verify Certificate</a></li>
+            <li><a href="index.html#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h5>Follow Us for Updates</h5>
+          <div class="social-icons" style="margin-top:8px;">
+            <a href="#" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 AI4Life Learning. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/verify.js"></script>
+</body>
+</html>

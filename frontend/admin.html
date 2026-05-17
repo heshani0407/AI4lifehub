@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — AI4Life Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <div class="admin-login" id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="images/logo.png" alt="AI4Life Learning" style="height:44px;margin-bottom:14px;" onerror="this.outerHTML='<div style=\'font-weight:800;font-size:1.2rem;color:var(--navy);margin-bottom:14px;\'>✦ AI4Life Learning</div>'" />
+        <h2>Admin Panel</h2>
+        <p>Sign in to manage certificates, courses, and content.</p>
+      </div>
+      <div id="loginAlert"></div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="loginUser" placeholder="admin" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div style="position:relative;">
+          <input type="password" id="loginPass" placeholder="Enter password" autocomplete="current-password" style="padding-right:44px;" />
+          <button onclick="togglePass()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-muted);cursor:pointer;">
+            <i class="fas fa-eye" id="eyeIcon"></i>
+          </button>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;" onclick="doLogin()">
+        <i class="fas fa-arrow-right-to-bracket"></i> Sign In
+      </button>
+      <p style="text-align:center;margin-top:16px;font-size:0.8rem;color:var(--text-muted);">
+        Default: <code>admin</code> / <code>ai4life2024</code>
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN PANEL ===== -->
+  <div id="adminPanel" class="hidden">
+
+    <!-- Admin Navbar -->
+    <div class="admin-navbar">
+      <div class="admin-navbar-brand">
+        <img src="images/logo.png" alt="AI4Life" onerror="this.style.display='none'" />
+        <span>AI4Life Learning</span>
+        <span class="badge-tag">Admin</span>
+      </div>
+      <div class="admin-nav-right">
+        <span><i class="fas fa-circle" style="color:var(--teal);font-size:0.6rem;"></i> Logged in as Admin</span>
+        <button class="btn btn-outline btn-sm" onclick="doLogout()" style="border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);">
+          <i class="fas fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
+
+    <div class="admin-layout">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar">
+        <div class="admin-sidebar-section">
+          <div class="admin-sidebar-label">Overview</div>
+          <button class="admin-nav-item active" onclick="showPage('dashboard', this)">
+            <span class="icon"><i class="fas fa-gauge-high"></i></span> Dashboard
+          </button>
+        </div>
+        <div class="admin-sidebar-section">
+          <div class="admin-sidebar-label">Management</div>
+          <button class="admin-nav-item" onclick="showPage('certificates', this)">
+            <span class="icon"><i class="fas fa-certificate"></i></span> Certificates
+          </button>
+          <button class="admin-nav-item" onclick="showPage('courses', this)">
+            <span class="icon"><i class="fas fa-book-open"></i></span> Courses
+          </button>
+        </div>
+        <div class="admin-sidebar-section">
+          <div class="admin-sidebar-label">Settings</div>
+          <button class="admin-nav-item" onclick="showPage('content', this)">
+            <span class="icon"><i class="fas fa-pen-to-square"></i></span> Content
+          </button>
+          <button class="admin-nav-item" onclick="showPage('settings', this)">
+            <span class="icon"><i class="fas fa-gear"></i></span> Settings
+          </button>
+        </div>
+        <div style="padding:20px;margin-top:auto;">
+          <a href="index.html" target="_blank" style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-muted);transition:color 0.2s;" onmouseover="this.style.color='var(--teal)'" onmouseout="this.style.color='var(--text-muted)'">
+            <i class="fas fa-arrow-up-right-from-square"></i> View Website
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="admin-content">
+
+        <!-- ── DASHBOARD ── -->
+        <div class="admin-page active" id="page-dashboard">
+          <div class="admin-page-header">
+            <div>
+              <h2>Dashboard</h2>
+              <p>Welcome back — here's your overview.</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon teal"><i class="fas fa-certificate"></i></div>
+              <div>
+                <div class="stat-num" id="statCerts">0</div>
+                <div class="stat-label">Total Certificates</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon navy"><i class="fas fa-book-open"></i></div>
+              <div>
+                <div class="stat-num" id="statCourses">0</div>
+                <div class="stat-label">Active Courses</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon gold"><i class="fas fa-user-check"></i></div>
+              <div>
+                <div class="stat-num" id="statActive">0</div>
+                <div class="stat-label">Active Certificates</div>
+              </div>
+            </div>
+          </div>
+          <div class="admin-card">
+            <h4><i class="fas fa-clock" style="color:var(--teal);margin-right:8px;"></i>Recent Certificates</h4>
+            <table class="data-table" id="recentCertsTable">
+              <thead>
+                <tr>
+                  <th>Certificate ID</th>
+                  <th>Name</th>
+                  <th>Course</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentCertsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ── CERTIFICATES ── -->
+        <div class="admin-page" id="page-certificates">
+          <div class="admin-page-header">
+            <div>
+              <h2>Certificate Management</h2>
+              <p>Add, edit, or remove student certificates.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openCertModal()">
+              <i class="fas fa-plus"></i> Add Certificate
+            </button>
+          </div>
+
+          <div class="admin-card" style="margin-bottom:20px;">
+            <div style="display:flex;gap:12px;align-items:center;">
+              <input type="text" id="certSearch" placeholder="Search by name, ID, or course…" style="flex:1;padding:10px 14px;border:1.5px solid var(--soft-gray);border-radius:8px;font-size:0.88rem;outline:none;font-family:inherit;" oninput="renderCertsTable()" />
+              <select id="certStatusFilter" style="padding:10px 14px;border:1.5px solid var(--soft-gray);border-radius:8px;font-size:0.88rem;outline:none;font-family:inherit;" onchange="renderCertsTable()">
+                <option value="">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Pending">Pending</option>
+                <option value="Revoked">Revoked</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <div id="certsTableWrap">
+              <table class="data-table" id="certsTable">
+                <thead>
+                  <tr>
+                    <th>Certificate ID</th>
+                    <th>Student Name</th>
+                    <th>Course</th>
+                    <th>Issue Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="certsBody"></tbody>
+              </table>
+              <p id="noDataMsg" class="text-muted hidden" style="text-align:center;padding:32px;">No certificates found. Add your first one!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── COURSES ── -->
+        <div class="admin-page" id="page-courses">
+          <div class="admin-page-header">
+            <div>
+              <h2>Course Management</h2>
+              <p>Manage course listings, pricing and offers.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openCourseModal()">
+              <i class="fas fa-plus"></i> Add Course
+            </button>
+          </div>
+          <div class="admin-card">
+            <table class="data-table" id="coursesTable">
+              <thead>
+                <tr>
+                  <th>Course Name</th>
+                  <th>Price (LKR)</th>
+                  <th>Offer Price</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="coursesBody"></tbody>
+            </table>
+            <p id="noCourseMsg" class="text-muted hidden" style="text-align:center;padding:32px;">No courses yet.</p>
+          </div>
+        </div>
+
+        <!-- ── CONTENT ── -->
+        <div class="admin-page" id="page-content">
+          <div class="admin-page-header">
+            <div>
+              <h2>Content Management</h2>
+              <p>Update website text and key information.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="saveContent()">
+              <i class="fas fa-floppy-disk"></i> Save Changes
+            </button>
+          </div>
+          <div id="contentSaveAlert"></div>
+          <div class="admin-card">
+            <h4>Homepage Content</h4>
+            <div class="form-group">
+              <label>Hero Headline</label>
+              <input type="text" id="heroHeadline" value="AI for Your Career — Without the Tech Confusion" />
+            </div>
+            <div class="form-group">
+              <label>Hero Sub-headline</label>
+              <textarea id="heroSubline" rows="2" style="resize:vertical;">Learn how to use AI tools in your daily work and studies — step by step, without needing a technical background.</textarea>
+            </div>
+            <div class="form-group">
+              <label>WhatsApp Number (with country code, no +)</label>
+              <input type="text" id="waNumber" placeholder="e.g. 94771234567" />
+            </div>
+          </div>
+          <div class="admin-card">
+            <h4>Contact & Social Links</h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Facebook URL</label>
+                <input type="url" id="fbUrl" placeholder="https://facebook.com/..." />
+              </div>
+              <div class="form-group">
+                <label>Instagram URL</label>
+                <input type="url" id="igUrl" placeholder="https://instagram.com/..." />
+              </div>
+              <div class="form-group">
+                <label>LinkedIn URL</label>
+                <input type="url" id="liUrl" placeholder="https://linkedin.com/..." />
+              </div>
+            </div>
+          </div>
+          <div class="admin-card">
+            <h4>Important Notes</h4>
+            <ul style="list-style:none;padding:0;">
+              <li style="padding:10px 0;border-bottom:1px solid var(--soft-gray);font-size:0.88rem;color:var(--text-muted);">
+                <i class="fas fa-info-circle" style="color:var(--teal);margin-right:8px;"></i>
+                To update the WhatsApp number across all enroll buttons, save it above and manually update the <code>href</code> links in <code>index.html</code>.
+              </li>
+              <li style="padding:10px 0;border-bottom:1px solid var(--soft-gray);font-size:0.88rem;color:var(--text-muted);">
+                <i class="fas fa-image" style="color:var(--teal);margin-right:8px;"></i>
+                To update the logo, replace <code>images/logo.png</code>. To update the hero image, replace <code>images/hero-statue.png</code>.
+              </li>
+              <li style="padding:10px 0;font-size:0.88rem;color:var(--text-muted);">
+                <i class="fas fa-certificate" style="color:var(--teal);margin-right:8px;"></i>
+                Certificates are stored locally in this browser. For a shared/live system, connect to a backend database.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ── SETTINGS ── -->
+        <div class="admin-page" id="page-settings">
+          <div class="admin-page-header">
+            <div>
+              <h2>Settings</h2>
+              <p>Manage admin credentials and data.</p>
+            </div>
+          </div>
+          <div class="admin-card">
+            <h4>Change Password</h4>
+            <div id="pwAlert"></div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="curPass" placeholder="Current password" />
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="newPass" placeholder="New password (min 8 chars)" />
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="changePassword()">
+              <i class="fas fa-lock"></i> Update Password
+            </button>
+          </div>
+          <div class="admin-card" style="border-top:3px solid #EF4444;">
+            <h4 style="color:#EF4444;">Danger Zone</h4>
+            <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:16px;">These actions are irreversible. Proceed with caution.</p>
+            <button class="btn btn-sm" style="background:#EF4444;color:#fff;" onclick="clearAllData()">
+              <i class="fas fa-trash"></i> Clear All Data
+            </button>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ===== CERTIFICATE MODAL ===== -->
+  <div class="modal-overlay" id="certModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="certModalTitle">Add Certificate</h3>
+        <button class="modal-close" onclick="closeCertModal()">✕</button>
+      </div>
+      <div id="certModalAlert"></div>
+      <input type="hidden" id="certEditId" />
+      <div class="form-group">
+        <label>Certificate ID *</label>
+        <input type="text" id="certId" placeholder="e.g. AL-2024-001" />
+      </div>
+      <div class="form-group">
+        <label>Student Name *</label>
+        <input type="text" id="certName" placeholder="Full name as on certificate" />
+      </div>
+      <div class="form-group">
+        <label>Course *</label>
+        <select id="certCourse">
+          <option value="">Select course…</option>
+          <!-- Options populated dynamically from saved courses via admin.js -->
+        </select>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Issue Date *</label>
+          <input type="date" id="certDate" />
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="certStatus">
+            <option value="Active">Active</option>
+            <option value="Pending">Pending</option>
+            <option value="Revoked">Revoked</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveCertificate()">
+          <i class="fas fa-floppy-disk"></i> Save Certificate
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="closeCertModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COURSE MODAL ===== -->
+  <div class="modal-overlay" id="courseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="courseModalTitle">Add Course</h3>
+        <button class="modal-close" onclick="closeCourseModal()">✕</button>
+      </div>
+      <div id="courseModalAlert"></div>
+      <input type="hidden" id="courseEditId" />
+      <div class="form-group">
+        <label>Course Name *</label>
+        <input type="text" id="courseName" placeholder="e.g. AI Literacy – Foundation Course" />
+      </div>
+      <div class="form-group">
+        <label>Course Description</label>
+        <textarea id="courseDesc" rows="3" placeholder="Short description of the course…" style="resize:vertical;"></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Regular Price (LKR) *</label>
+          <input type="number" id="coursePrice" placeholder="15000" />
+        </div>
+        <div class="form-group">
+          <label>Offer Price (LKR)</label>
+          <input type="number" id="courseOffer" placeholder="10000" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="courseStatus">
+          <option value="Active">Active</option>
+          <option value="Coming Soon">Coming Soon</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px;">
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveCourse()">
+          <i class="fas fa-floppy-disk"></i> Save Course
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="closeCourseModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Dialog -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal" style="max-width:400px;">
+      <div class="modal-header">
+        <h3 id="confirmTitle">Confirm Action</h3>
+        <button class="modal-close" onclick="closeConfirm()">✕</button>
+      </div>
+      <p id="confirmMsg" style="color:var(--text-muted);margin-bottom:24px;"></p>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-sm" id="confirmYes" style="background:#EF4444;color:#fff;flex:1;justify-content:center;">Confirm</button>
+        <button class="btn btn-outline btn-sm" onclick="closeConfirm()" style="flex:1;justify-content:center;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

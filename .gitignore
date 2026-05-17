@@ -1,0 +1,15 @@
+# ── Backend ───────────────────────────────────────────────────────────────────
+backend/.env
+backend/node_modules/
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ── Database (live data — keep off GitHub) ────────────────────────────────────
+backend/data/*.json
+
+# ── OS & Editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+*.log
