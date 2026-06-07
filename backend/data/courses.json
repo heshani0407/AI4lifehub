@@ -1,0 +1,24 @@
+[
+  {
+    "_id": "1",
+    "courseName": "AI Literacy — Foundation Course for Non-Tech Professionals",
+    "description": "For Non-Tech Professionals",
+    "sessions": 6,
+    "features": [
+      "100% practical learning",
+      "No coding required",
+      "Real-world AI applications",
+      "Flexible payment options",
+      "WhatsApp support included"
+    ],
+    "originalPrice": 15000,
+    "offerPrice": 10000,
+    "offerLabel": "Early Bird Offer",
+    "paymentOptions": [
+      "full",
+      "installment"
+    ],
+    "status": "Active",
+    "createdAt": "2026-05-09T16:28:29.733Z"
+  }
+]

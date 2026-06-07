@@ -50,6 +50,9 @@ app.use('/api/content',      require('./routes/content'));
 app.use('/api/settings',     require('./routes/settings'));
 app.use('/api/media',        require('./routes/media'));
 
+// Public POST (website form) — protected GET (admin)
+app.use('/api/applications', require('./routes/applications'));
+
 // Public — no auth required (used by verify.html on the main website)
 app.use('/api/verify',       require('./routes/verify'));
 

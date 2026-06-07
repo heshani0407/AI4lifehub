@@ -72,6 +72,10 @@
         </div>
         <div class="admin-sidebar-section">
           <div class="admin-sidebar-label">Management</div>
+          <button class="admin-nav-item" onclick="showPage('applications', this)">
+            <span class="icon"><i class="fas fa-file-lines"></i></span> Applications
+            <span class="badge-new" id="appsBadge" style="display:none;margin-left:auto;background:#ef4444;color:#fff;font-size:0.65rem;padding:2px 7px;border-radius:20px;font-weight:700;"></span>
+          </button>
           <button class="admin-nav-item" onclick="showPage('certificates', this)">
             <span class="icon"><i class="fas fa-certificate"></i></span> Certificates
           </button>
@@ -128,6 +132,13 @@
                 <div class="stat-label">Active Certificates</div>
               </div>
             </div>
+            <div class="stat-card" style="cursor:pointer;" onclick="showPage('applications', document.querySelector('[onclick*=applications]'))">
+              <div class="stat-icon" style="background:rgba(239,68,68,0.12);color:#ef4444;"><i class="fas fa-file-lines"></i></div>
+              <div>
+                <div class="stat-num" id="statApps">0</div>
+                <div class="stat-label">New Applications</div>
+              </div>
+            </div>
           </div>
           <div class="admin-card">
             <h4><i class="fas fa-clock" style="color:var(--teal);margin-right:8px;"></i>Recent Certificates</h4>
@@ -142,6 +153,55 @@
               </thead>
               <tbody id="recentCertsBody"></tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- ── APPLICATIONS ── -->
+        <div class="admin-page" id="page-applications">
+          <div class="admin-page-header">
+            <div>
+              <h2>Applications</h2>
+              <p>Manage batch enrollment applications from prospective students.</p>
+            </div>
+          </div>
+
+          <!-- Filter bar -->
+          <div class="admin-card" style="margin-bottom:20px;">
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+              <input type="text" id="appSearch" placeholder="Search by name, email, or course…"
+                style="flex:1;min-width:200px;padding:10px 14px;border:1.5px solid var(--soft-gray);border-radius:8px;font-size:0.88rem;outline:none;font-family:inherit;"
+                oninput="renderAppsTable()" />
+              <select id="appStatusFilter"
+                style="padding:10px 14px;border:1.5px solid var(--soft-gray);border-radius:8px;font-size:0.88rem;outline:none;font-family:inherit;"
+                onchange="renderAppsTable()">
+                <option value="">All Status</option>
+                <option value="New">New</option>
+                <option value="Reviewed">Reviewed</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Enrolled">Enrolled</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Applicant</th>
+                  <th>Course</th>
+                  <th>Contact</th>
+                  <th>Payment</th>
+                  <th>Submitted</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="appsBody"></tbody>
+            </table>
+            <p class="hidden" id="noAppsMsg" style="text-align:center;color:var(--text-muted);padding:28px;">
+              No applications yet.
+            </p>
           </div>
         </div>
 

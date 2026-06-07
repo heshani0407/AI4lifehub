@@ -121,7 +121,7 @@ async function loadSiteData() {
     }
 
     // ── 3. Update stats bar ────────────────────────────────────────────────
-    const statEls = document.querySelectorAll('.hero-stat-value');
+    const statEls = document.querySelectorAll('.hero-stat-num');
     const stats   = [content.stat1, content.stat2, content.stat3].filter(Boolean);
     statEls.forEach((el, i) => { if (stats[i]) el.textContent = stats[i]; });
 
@@ -132,3 +132,110 @@ async function loadSiteData() {
 
 // Run on page load
 loadSiteData();
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  APPLICATION MODAL
+// ══════════════════════════════════════════════════════════════════════════════
+
+function openApplyModal() {
+  const modal = document.getElementById('applyModal');
+  if (!modal) return;
+  // Reset to form view each time it opens
+  document.getElementById('applyFormView')?.classList.remove('hidden');
+  document.getElementById('applySuccessView')?.classList.add('hidden');
+  document.getElementById('applyForm')?.reset();
+  document.getElementById('applyAlert').innerHTML = '';
+  populateApplyCourseDropdown();
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeApplyModal() {
+  const modal = document.getElementById('applyModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on backdrop click
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('applyModal');
+  if (modal) {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeApplyModal();
+    });
+  }
+  // Close on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeApplyModal();
+  });
+});
+
+// Populate course dropdown from live backend courses
+// Falls back to the hardcoded option already in the HTML if the backend is unreachable
+async function populateApplyCourseDropdown() {
+  const sel = document.getElementById('applyCourse');
+  if (!sel) return;
+  try {
+    const courses = await fetch(`${API}/courses`).then(r => r.json());
+    const active  = courses.filter(c => c.status === 'Active');
+    if (!active.length) return; // keep the hardcoded fallback option
+    sel.innerHTML = '<option value="">Select a course…</option>';
+    active.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value       = c.courseName;
+      opt.textContent = c.courseName;
+      sel.appendChild(opt);
+    });
+  } catch {
+    // Backend offline — the hardcoded HTML option stays in place as fallback
+  }
+}
+
+async function submitApplication(e) {
+  e.preventDefault();
+  const alertBox = document.getElementById('applyAlert');
+  const btn      = document.getElementById('applySubmitBtn');
+
+  const fullName     = document.getElementById('applyName').value.trim();
+  const courseType   = document.getElementById('applyCourse').value;
+  const phone        = document.getElementById('applyPhone').value.trim();
+  const email        = document.getElementById('applyEmail').value.trim();
+  const paymentMethod= document.getElementById('applyPayment').value;
+  const driveLink    = document.getElementById('applyDrive').value.trim();
+  const notes        = document.getElementById('applyNotes').value.trim();
+
+  // Client-side validation
+  if (!fullName || !courseType || !phone || !email || !paymentMethod) {
+    alertBox.innerHTML = `<div class="alert alert-error" style="margin-bottom:14px;">
+      <i class="fas fa-circle-xmark"></i> Please fill in all required fields.
+    </div>`;
+    return;
+  }
+
+  btn.disabled     = true;
+  btn.innerHTML    = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
+  alertBox.innerHTML = '';
+
+  try {
+    const res  = await fetch(`${API}/applications`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ fullName, courseType, paymentMethod, phone, email, driveLink, notes })
+    });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'Submission failed.');
+
+    // Show success view
+    document.getElementById('applyFormView').classList.add('hidden');
+    document.getElementById('applySuccessView').classList.remove('hidden');
+
+  } catch (err) {
+    alertBox.innerHTML = `<div class="alert alert-error" style="margin-bottom:14px;">
+      <i class="fas fa-circle-xmark"></i> ${err.message || 'Something went wrong. Please try again.'}
+    </div>`;
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Application';
+  }
+}

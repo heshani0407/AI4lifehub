@@ -15,6 +15,7 @@ const dropToken = ()  => localStorage.removeItem('al4life_token');
 // ── In-memory cache (avoids repeated fetches on the same page) ────────────────
 let _certs   = [];
 let _courses = [];
+let _apps    = [];
 
 // ── Core fetch wrapper ────────────────────────────────────────────────────────
 // Attaches the JWT token, parses JSON, and throws on non-2xx responses.
@@ -113,11 +114,12 @@ function togglePass() {
 
 // Load all data, then reveal the panel
 async function showAdminPanel() {
-  await Promise.all([ loadCerts(), loadCourses() ]);
+  await Promise.all([ loadCerts(), loadCourses(), loadApps() ]);
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('adminPanel').classList.remove('hidden');
   renderCertsTable();
   renderCoursesTable();
+  renderAppsTable();
   refreshDashboard();
   loadContent();
 }
@@ -155,10 +157,19 @@ function showPage(name, btn) {
 // ══════════════════════════════════════════════════════════════════════════════
 
 function refreshDashboard() {
-  const active = _certs.filter(c => c.status === 'Active').length;
+  const active  = _certs.filter(c => c.status === 'Active').length;
+  const newApps = _apps.filter(a => a.status === 'New').length;
   document.getElementById('statCerts').textContent    = _certs.length;
   document.getElementById('statCourses').textContent  = _courses.length;
   document.getElementById('statActive').textContent   = active;
+  document.getElementById('statApps').textContent     = newApps;
+
+  // Red badge on sidebar nav item
+  const badge = document.getElementById('appsBadge');
+  if (badge) {
+    badge.textContent    = newApps;
+    badge.style.display  = newApps > 0 ? 'inline-block' : 'none';
+  }
 
   const body   = document.getElementById('recentCertsBody');
   if (!body) return;
@@ -508,7 +519,7 @@ let _pendingDelete = null;
 
 function confirmDelete(type, id) {
   _pendingDelete = { type, id };
-  const label = type === 'cert' ? 'certificate' : 'course';
+  const label = type === 'cert' ? 'certificate' : type === 'app' ? 'application' : 'course';
   document.getElementById('confirmMsg').textContent =
     `Are you sure you want to delete this ${label}? This cannot be undone.`;
   document.getElementById('confirmModal').classList.add('open');
@@ -524,6 +535,10 @@ async function executeDelete() {
       await apiFetch('DELETE', `/certificates/${id}`);
       _certs = _certs.filter(c => c._id !== id);
       renderCertsTable();
+    } else if (type === 'app') {
+      await apiFetch('DELETE', `/applications/${id}`);
+      _apps = _apps.filter(a => a._id !== id);
+      renderAppsTable();
     } else {
       await apiFetch('DELETE', `/courses/${id}`);
       _courses = _courses.filter(c => c._id !== id);
@@ -547,6 +562,92 @@ function closeConfirm() {
   document.getElementById(id)
     ?.addEventListener('click', e => { if (e.target.id === id) e.target.classList.remove('open'); });
 });
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  APPLICATIONS
+// ══════════════════════════════════════════════════════════════════════════════
+
+async function loadApps() {
+  try   { _apps = await apiFetch('GET', '/applications'); }
+  catch { _apps = []; }
+}
+
+function renderAppsTable() {
+  const query  = (document.getElementById('appSearch')?.value || '').toLowerCase();
+  const filter = document.getElementById('appStatusFilter')?.value || '';
+  const body   = document.getElementById('appsBody');
+  const noMsg  = document.getElementById('noAppsMsg');
+  if (!body) return;
+
+  const filtered = _apps.filter(a => {
+    const q = !query
+      || a.fullName.toLowerCase().includes(query)
+      || a.email.toLowerCase().includes(query)
+      || a.courseType.toLowerCase().includes(query);
+    const s = !filter || a.status === filter;
+    return q && s;
+  });
+
+  // Sort newest first
+  filtered.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+  if (!filtered.length) {
+    body.innerHTML = '';
+    noMsg?.classList.remove('hidden');
+    return;
+  }
+  noMsg?.classList.add('hidden');
+
+  const fmtDate = d => d ? new Date(d).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+
+  const statusColors = {
+    'New':       'background:#fee2e2;color:#dc2626;',
+    'Reviewed':  'background:#fef9c3;color:#ca8a04;',
+    'Contacted': 'background:#dbeafe;color:#2563eb;',
+    'Enrolled':  'background:#dcfce7;color:#16a34a;',
+    'Rejected':  'background:#f1f5f9;color:#64748b;'
+  };
+
+  body.innerHTML = filtered.map(a => `
+    <tr>
+      <td>
+        <strong style="font-size:0.9rem;">${escHtml(a.fullName)}</strong>
+        ${a.notes ? `<br><span style="font-size:0.76rem;color:var(--text-muted);">${escHtml(a.notes.slice(0,60))}${a.notes.length>60?'…':''}</span>` : ''}
+      </td>
+      <td style="font-size:0.82rem;">${escHtml(a.courseType)}</td>
+      <td style="font-size:0.82rem;">
+        <div>${escHtml(a.phone)}</div>
+        <div style="color:var(--text-muted);">${escHtml(a.email)}</div>
+        ${a.driveLink ? `<a href="${escHtml(a.driveLink)}" target="_blank" style="font-size:0.76rem;color:var(--teal);"><i class="fas fa-folder-open"></i> Drive</a>` : ''}
+      </td>
+      <td style="font-size:0.82rem;">${escHtml(a.paymentMethod)}</td>
+      <td style="font-size:0.8rem;color:var(--text-muted);">${fmtDate(a.submittedAt)}</td>
+      <td>
+        <select style="padding:5px 8px;border:1.5px solid var(--soft-gray);border-radius:6px;font-size:0.78rem;font-family:inherit;${statusColors[a.status]||''}"
+          onchange="updateAppStatus('${a._id}', this.value)">
+          <option value="New"       ${a.status==='New'       ?'selected':''}>New</option>
+          <option value="Reviewed"  ${a.status==='Reviewed'  ?'selected':''}>Reviewed</option>
+          <option value="Contacted" ${a.status==='Contacted' ?'selected':''}>Contacted</option>
+          <option value="Enrolled"  ${a.status==='Enrolled'  ?'selected':''}>Enrolled</option>
+          <option value="Rejected"  ${a.status==='Rejected'  ?'selected':''}>Rejected</option>
+        </select>
+      </td>
+      <td>
+        <button class="btn-icon btn-delete" title="Delete"
+          onclick="confirmDelete('app','${a._id}')"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`).join('');
+}
+
+async function updateAppStatus(id, status) {
+  try {
+    const updated = await apiFetch('PATCH', `/applications/${id}/status`, { status });
+    _apps = _apps.map(a => a._id === id ? updated : a);
+    refreshDashboard();
+  } catch (e) {
+    alert('Failed to update status: ' + e.message);
+  }
+}
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  CLEAR ALL DATA

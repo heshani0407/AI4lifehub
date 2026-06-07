@@ -189,9 +189,9 @@
           </p>
 
           <div class="hero-actions">
-            <a href="#courses" class="btn btn-primary btn-lg">
+            <button class="btn btn-primary btn-lg" onclick="openApplyModal()">
               <i class="fas fa-arrow-right"></i> Join the Next Batch
-            </a>
+            </button>
             <a href="https://wa.me/yournumber?text=Hello,%20I'd%20like%20to%20enroll%20in%20the%20AI%20for%20Life%20course." target="_blank" class="btn btn-whatsapp btn-lg">
               <i class="fab fa-whatsapp"></i> Enroll via WhatsApp
             </a>
@@ -229,7 +229,7 @@
       <div class="container">
         <div class="grid-4">
           <div class="feature-item">
-            <div class="feature-icon"><i class="fas fa-code-slash"></i></div>
+            <div class="feature-icon"><i class="fas fa-laptop-code"></i></div>
             <div>
               <h4>No Coding Required</h4>
               <p>Learn AI without any technical background.</p>
@@ -477,9 +477,9 @@
         <h2>Start Your AI Journey Today</h2>
         <p>You don't need to be technical to use AI — whether you're working or studying. Join the next batch and transform how you work.</p>
         <div class="final-cta-buttons">
-          <a href="#courses" class="btn btn-primary btn-lg">
+          <button class="btn btn-primary btn-lg" onclick="openApplyModal()">
             <i class="fas fa-arrow-right"></i> Join the Next Batch
-          </a>
+          </button>
           <a href="https://wa.me/yournumber?text=Hello,%20I'd%20like%20to%20enroll%20in%20the%20AI%20for%20Life%20course." target="_blank" class="btn btn-whatsapp btn-lg">
             <i class="fab fa-whatsapp"></i> Enroll via WhatsApp
           </a>
@@ -487,6 +487,132 @@
       </div>
     </section>
   </main>
+
+  <!-- ===== APPLICATION POPUP MODAL ===== -->
+  <div class="app-modal-overlay" id="applyModal" role="dialog" aria-modal="true" aria-labelledby="applyModalTitle">
+    <div class="app-modal-box">
+
+      <!-- Close button -->
+      <button class="app-modal-close" onclick="closeApplyModal()" aria-label="Close">
+        <i class="fas fa-xmark"></i>
+      </button>
+
+      <!-- ── FORM VIEW ── -->
+      <div id="applyFormView">
+        <div class="app-modal-header">
+          <div class="app-modal-icon"><i class="fas fa-rocket"></i></div>
+          <h3 id="applyModalTitle">Join the Next Batch</h3>
+          <p>Fill in your details and we'll get back to you within 2–3 business days.</p>
+        </div>
+
+        <div id="applyAlert"></div>
+
+        <form id="applyForm" onsubmit="submitApplication(event)" novalidate>
+
+          <!-- Full Name -->
+          <div class="app-field">
+            <label for="applyName">Full Name <span class="req">*</span></label>
+            <input type="text" id="applyName" placeholder="e.g. Kasuni Perera" required />
+          </div>
+
+          <!-- Course Type -->
+          <div class="app-field">
+            <label for="applyCourse">Course <span class="req">*</span></label>
+            <select id="applyCourse" required>
+              <option value="">Select a course…</option>
+              <option value="AI Literacy — Foundation Course for Non-Tech Professionals">AI Literacy — Foundation Course for Non-Tech Professionals</option>
+            </select>
+          </div>
+
+          <!-- Phone + Email row -->
+          <div class="app-field-row">
+            <div class="app-field">
+              <label for="applyPhone">Phone Number <span class="req">*</span></label>
+              <input type="tel" id="applyPhone" placeholder="+94 77 000 0000" required />
+            </div>
+            <div class="app-field">
+              <label for="applyEmail">Email Address <span class="req">*</span></label>
+              <input type="email" id="applyEmail" placeholder="you@example.com" required />
+            </div>
+          </div>
+
+          <!-- Payment Method -->
+          <div class="app-field">
+            <label for="applyPayment">Preferred Payment Option <span class="req">*</span></label>
+            <select id="applyPayment" required>
+              <option value="">Select a payment option…</option>
+              <option value="Full Payment">Full Payment — Pay the full course fee at once</option>
+              <option value="Installment Plan (50/50)">Installment Plan — Pay 50% now, 50% mid-course</option>
+              <option value="Decide Later">I'll decide later — Discuss with the team</option>
+            </select>
+          </div>
+
+          <!-- Google Drive Link (optional) -->
+          <div class="app-field">
+            <label for="applyDrive">Google Drive Link <span class="optional">(optional)</span></label>
+            <input type="url" id="applyDrive" placeholder="https://drive.google.com/…" />
+            <span class="app-field-hint">Share any relevant documents (CV, portfolio, etc.)</span>
+          </div>
+
+          <!-- Additional Notes (optional) -->
+          <div class="app-field">
+            <label for="applyNotes">Anything else we should know? <span class="optional">(optional)</span></label>
+            <textarea id="applyNotes" rows="3" placeholder="e.g. preferred schedule, questions about the course…"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg app-submit-btn" id="applySubmitBtn">
+            <i class="fas fa-paper-plane"></i> Submit Application
+          </button>
+
+        </form>
+      </div>
+
+      <!-- ── SUCCESS VIEW ── -->
+      <div id="applySuccessView" class="hidden">
+        <div class="app-success-card">
+          <div class="app-success-icon">
+            <i class="fas fa-circle-check"></i>
+          </div>
+          <h3>Application Received! 🎉</h3>
+          <p class="app-success-main">
+            Thank you for your interest in AI4Life Learning.
+            We've received your application and our team will review it shortly.
+          </p>
+          <div class="app-success-timeline">
+            <div class="app-timeline-item">
+              <div class="app-timeline-dot teal"></div>
+              <div>
+                <strong>Now</strong>
+                <span>Application submitted successfully</span>
+              </div>
+            </div>
+            <div class="app-timeline-item">
+              <div class="app-timeline-dot grey"></div>
+              <div>
+                <strong>Within 2–3 business days</strong>
+                <span>We'll reach out via phone or email to confirm your spot</span>
+              </div>
+            </div>
+            <div class="app-timeline-item">
+              <div class="app-timeline-dot grey"></div>
+              <div>
+                <strong>Before the batch starts</strong>
+                <span>You'll receive all course materials and access details</span>
+              </div>
+            </div>
+          </div>
+          <p class="app-success-note">
+            <i class="fab fa-whatsapp" style="color:#25D366;"></i>
+            Have an urgent question? Message us on WhatsApp anytime.
+          </p>
+          <button class="btn btn-outline" onclick="closeApplyModal()">
+            Close
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ===== FOOTER ===== -->
   <footer>

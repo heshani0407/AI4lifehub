@@ -12,6 +12,8 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 // ── Seed defaults (written once when the JSON file does not yet exist) ────────
 const DEFAULTS = {
+  applications: [],
+
   certificates: [],
 
   courses: [

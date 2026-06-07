@@ -4,8 +4,8 @@ backend/node_modules/
 backend/uploads/*
 !backend/uploads/.gitkeep
 
-# ── Database (live data — keep off GitHub) ────────────────────────────────────
-backend/data/*.json
+# ── Database — seed files ARE committed so Railway has initial data ───────────
+# backend/data/*.json  ← intentionally NOT ignored
 
 # ── OS & Editor ───────────────────────────────────────────────────────────────
 .DS_Store
