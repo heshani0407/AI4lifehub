@@ -4,7 +4,7 @@
 // ══════════════════════════════════════════════════════════════════════════════
 
 // Use var so admin.js (also loaded on admin.html) can declare the same name without a SyntaxError
-var API = 'http://localhost:5000/api';
+var API = 'https://ai4lifehub-production.up.railway.app/api';
 
 // ── Navbar scroll effect ───────────────────────────────────────────────────────
 const navbar = document.getElementById('navbar');

@@ -1,5 +1,5 @@
 // ── Config ────────────────────────────────────────────────────────────────────
-const API = 'http://localhost:5000/api';
+const API = 'https://ai4lifehub-production.up.railway.app/api';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function escHtml(str) {

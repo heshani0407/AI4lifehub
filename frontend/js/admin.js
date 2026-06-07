@@ -5,7 +5,7 @@
 // ══════════════════════════════════════════════════════════════════════════════
 
 // var allows harmless re-declaration when main.js is also loaded on the same page
-var API = 'http://localhost:5000/api';
+var API = 'https://ai4lifehub-production.up.railway.app/api';
 
 // ── Token helpers ─────────────────────────────────────────────────────────────
 const getToken  = ()  => localStorage.getItem('al4life_token') || '';
